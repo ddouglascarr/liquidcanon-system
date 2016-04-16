@@ -11,6 +11,15 @@ core:
     - postgres
 #  volumes:
 #    - ../liquid_feedback_core:/opt/liquid_feedback_core
+
+# Core container for running init commands in
+core_init:
+  build: ./images/core
+  links:
+    - postgres
+  entrypoint: ./keep-alive.sh
+  command: please
+
 frontend:
   build: ./images/frontend
 #  image: ddouglascarr/frontend

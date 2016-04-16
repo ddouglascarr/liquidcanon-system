@@ -22,8 +22,12 @@ RUN wget -qO- http://www.public-software-group.org/pub/projects/liquid_feedback/
 ADD admin-party.sql /opt/liquid_feedback_core/
 
 ADD entrypoint.sh /opt/liquid_feedback_docker/
+ADD keep-alive.sh /opt/liquid_feedback_docker/
 ADD bootstrap.sh /opt/liquid_feedback_docker/
 RUN chmod 755 /opt/liquid_feedback_docker/*
+WORKDIR /opt/liquid_feedback_docker
+
+ENV LQD_DB_HOST=postgres
 
 ENTRYPOINT ["/opt/liquid_feedback_docker/entrypoint.sh"]
 

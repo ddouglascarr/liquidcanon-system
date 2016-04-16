@@ -30,11 +30,13 @@ db_superuser="${LQD_DB_SUPERUSER:-postgres}"
 db_name="${LQD_DB_NAME:-liquid_feedback}"
 db_template="${LQD_DB_TEMPLATE:-liquid_feedback_template}"
 
+LQD_CMD="./bin/lqd.sh"
+EXEC_CMD="$LQD_CMD sys exec core_init"
 PSQL_CMD="psql -p $db_port -h $db_host -U $db_user -d $db_name"
 
 function init_db {
-  ./bin/lqd.sh sys stop
-  ./bin/lqd.sh sys up -d postgres
+  $LQD_CMD sys stop
+  $LQD_CMD sys up -d postgres core_init
   echo "****** bootstrap starting ******"
   echo "****** waiting 20 seconds for database to start ******"
   sleep 20 # need to wait for database to get going
