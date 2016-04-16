@@ -6,6 +6,16 @@ BEGIN;
 -- set transaction isolation level to be able to call "check_everything"() function
 SET TRANSACTION ISOLATION LEVEL REPEATABLE READ;
 
+INSERT INTO "system_setting" ("member_ttl") VALUES ('31 days');
+
+INSERT INTO "contingent" ("polling", "time_frame", "text_entry_limit", "initiative_limit") VALUES
+  (FALSE, '60 minutes', 6, 10),
+  (FALSE, '1 day', 60, 15),
+  (FALSE, '1 week', 120, 20),
+  (TRUE, '60 minutes', 6, 1),
+  (TRUE, '1 day', 60, 10),
+  (TRUE, '1 week', 120, 20);
+
 INSERT INTO "member" ("activated", "last_activity", "active", "login", "name") VALUES
   ('now', 'now', TRUE, 'tender_hugle',  'Tender Hugle'),              -- id  1
   ('now', 'now', TRUE, 'dreamy_almeida',  'Dreamy Almeida'),          -- id  2
