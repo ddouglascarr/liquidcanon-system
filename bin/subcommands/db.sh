@@ -1,3 +1,4 @@
+#!/bin/bash
 
 HELP_TEXT="
 Core utility commands
