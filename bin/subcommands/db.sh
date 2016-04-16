@@ -15,6 +15,7 @@ Commands:
 Environment Variables:
   LQD_DB_PORT                Database port (default 5432)
   LQD_DB_HOST                Dabatabase host (default localhost)
+  LQD_DB_CONTAINER_HOST      Database host from container (default postgres)
   LQD_DB_USER                Database username (devault www-data)
   LQD_DB_SUPERUSER           Database superuser username (default postgres)
   LQD_DB_NAME                Database name (default liquid_feedback)
@@ -25,6 +26,7 @@ Environment Variables:
 # Init environment variables
 db_port="${LQD_DB_PORT:-5432}"
 db_host="${LQD_DB_HOST:-localhost}"
+db_container_host="${LQD_DB_CONTAINER_HOST:-postgres}"
 db_user="${LQD_DB_USER:-www-data}"
 db_superuser="${LQD_DB_SUPERUSER:-postgres}"
 db_name="${LQD_DB_NAME:-liquid_feedback}"
@@ -37,22 +39,25 @@ PSQL_CMD="psql -p $db_port -h $db_host -U $db_user -d $db_name"
 function init_db {
   $LQD_CMD sys stop
   $LQD_CMD sys up -d postgres core_init
-  echo "****** bootstrap starting ******"
-  echo "****** waiting 20 seconds for database to start ******"
-  sleep 20 # need to wait for database to get going
+  echo "****** connecting to database ******"
+  while ! $EXEC_CMD psql -U $db_superuser -h $db_container_host -p $db_port -c \\conninfo; do 
+    echo "connecting ..."; 
+  done
+  echo "****** connected *******"
 
   echo "*******CREATING TEMPLATE DATABASES*******"
-  createuser -U $db_superuser -h $db_host --no-superuser \
+  $EXEC_CMD createuser -U $db_superuser -h $db_container_host --no-superuser \
      --createdb --no-createrole www-data
-  dropdb -e -p $db_port -h $db_host -U $db_user $db_template
-  createdb -U $db_user -h $db_host -p $db_port $db_template
+  $EXEC_CMD dropdb -e -p $db_port -h $db_container_host -U $db_user $db_template
+  $EXEC_CMD createdb -U $db_user -h $db_container_host -p $db_port $db_template
 #  createlang -h $db_host plpgsql $db_template  # command may be omitted, depending on PostgreSQL version
-  psql -h $db_host -p $db_port -U $db_user -v ON_ERROR_STOP=1 -f ./sql/core.sql $db_template
+  $EXEC_CMD psql -h $db_container_host -p $db_port -U $db_user -v ON_ERROR_STOP=1 -f /opt/liquid_feedback_core/core.sql $db_template
 
   echo "******CREATING DATBASE FROM TEMPLATE******"
   # createdb -h $db_host -U $db_user -T $db_template $db_name
   clean_db
-  ./bin/lqd.sh sys stop
+  $LQD_CMD sys stop
+  $LQD_CMD sys rm -vf core_init
 }
 
 function time_warp {
@@ -67,7 +72,6 @@ function exec_sql {
     END;
 EOF
 }
-
 function run_sql_file {
   $PSQL_CMD -f ./sql/$@.sql
 }
