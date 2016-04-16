@@ -66,32 +66,37 @@ DOCKER_CMD="docker-compose -p $sys_prefix -f docker-compose.yml"
 while [ "$1" != "" ]; do
   case $1 in 
 
-    "deploy" )        shift
-                      deploy $@
-                      exit
-                      ;;
+    "deploy" )                    shift
+                                  deploy $@
+                                  exit
+                                  ;;
 
-    "recreate" )      recreate
-                      exit
-                      ;;
+    "recreate" )                  recreate
+                                  exit
+                                  ;;
 
-    "shell" )         shift
-                      exec_shell $@
-                      exit
-                      ;;
+    "shell" )                     shift
+                                  exec_shell $@
+                                  exit
+                                  ;;
 
-    "exec" )          shift
-                      exec_cmd $@
-                      exit
-                      ;;
+    "exec" )                      shift
+                                  exec_cmd $@
+                                  exit
+                                  ;;
 
-    "clean" )         clean
-                      exit 0 # always exit with success
-                      ;;
+    "clean" )                     clean
+                                  exit 0 # always exit with success
+                                  ;;
 
-    * )               $DOCKER_CMD $@
-                      exit
-                      ;;
+    "-h" | "--help" | "help" )    shift
+                                  echo "$HELP_TEXT"
+                                  exit 0
+                                  ;;
+
+    * )                           $DOCKER_CMD $@
+                                  exit
+                                  ;;
 
   esac
   shift
