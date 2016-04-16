@@ -33,8 +33,11 @@ db_template="${LQD_DB_TEMPLATE:-liquid_feedback_template}"
 PSQL_CMD="psql -p $db_port -h $db_host -U $db_user -d $db_name"
 
 function init_db {
+  ./bin/lqd.sh sys stop
+  ./bin/lqd.sh sys up -d postgres
   echo "****** bootstrap starting ******"
-  sleep 10 # need to wait for database to get going
+  echo "****** waiting 20 seconds for database to start ******"
+  sleep 20 # need to wait for database to get going
 
   echo "*******CREATING TEMPLATE DATABASES*******"
   createuser -U $db_superuser -h $db_host --no-superuser \
@@ -47,6 +50,7 @@ function init_db {
   echo "******CREATING DATBASE FROM TEMPLATE******"
   # createdb -h $db_host -U $db_user -T $db_template $db_name
   clean_db
+  ./bin/lqd.sh sys stop
 }
 
 function time_warp {
