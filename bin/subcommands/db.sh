@@ -11,6 +11,7 @@ Commands:
   clean                       Drop database, and re-instantiate it from template
   run-file <filename>         Execute a sql file from sql directory (omit .sql)
   time-warp <interval>        Move all events back by interval
+  list-members                List all the member names
   init                        Initialize the database
 
 Environment Variables:
@@ -66,6 +67,10 @@ function time_warp {
   exit 0
 }
 
+function list_members {
+  exec_sql "SELECT login FROM member;"
+}
+
 function exec_sql {
   $PSQL_CMD <<EOF
     BEGIN TRANSACTION ISOLATION LEVEL REPEATABLE READ;
@@ -95,6 +100,10 @@ while [ "$1" != "" ]; do
                             ;;
     "run-file" )            shift
                             run_sql_file $@
+                            exit
+                            ;;
+    "list-members" )        shift
+                            list_members
                             exit
                             ;;
     "shell" )               $PSQL_CMD
