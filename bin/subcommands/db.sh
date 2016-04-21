@@ -68,7 +68,7 @@ function time_warp {
 }
 
 function list_members {
-  exec_sql "SELECT login FROM member;"
+  exec_sql "SELECT id, login FROM member ORDER BY id;"
 }
 
 function exec_sql {
