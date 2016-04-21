@@ -16,6 +16,9 @@ INSERT INTO "contingent" ("polling", "time_frame", "text_entry_limit", "initiati
   (TRUE, '1 day', 60, 10),
   (TRUE, '1 week', 120, 20);
 
+-- So incompatable hashing algorythms can be used during dev
+ALTER TABLE "member" ADD COLUMN "password_liquidcanon" VARCHAR(60);
+
 INSERT INTO "member" ("activated", "last_activity", "active", "login", "name") VALUES
   ('now', 'now', TRUE, 'tender_hugle',  'Tender Hugle'),              -- id  1
   ('now', 'now', TRUE, 'dreamy_almeida',  'Dreamy Almeida'),          -- id  2
@@ -44,6 +47,7 @@ INSERT INTO "member" ("activated", "last_activity", "active", "login", "name") V
 
 -- set password to "login"
 UPDATE "member" SET "password" = '$1$PcI6b1Bg$2SHjAZH2nMLFp0fxHis.Q0';
+UPDATE "member" SET "password_liquidcanon" = '$2a$10$S14jaCA5zJ3lZ/r7eTQEae5NDV69isO20LCcOnojPf6MeR4hmexd2';
 UPDATE "member" SET admin = TRUE WHERE login = 'admin';
 
 END;
