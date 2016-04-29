@@ -22,20 +22,23 @@ INSERT INTO "policy" (
     1, 2, TRUE,
     TRUE, FALSE );
 
-INSERT INTO "unit" ("name") VALUES ('Main');
+INSERT INTO "unit" ("name") VALUES ('Main'), ('Other');
 
 INSERT INTO "privilege" ("unit_id", "member_id", "voting_right")
   SELECT 1 AS "unit_id", "id" AS "member_id", TRUE AS "voting_right"
   FROM "member";
+INSERT INTO "privilege" ("unit_id", "member_id", "voting_right") VALUES
+  (2, 1, TRUE), (2, 2, TRUE), (2, 3, TRUE);
 
 INSERT INTO "area" ("unit_id", "name") VALUES
   (1, 'Area #1'),  -- id 1
   (1, 'Area #2'),  -- id 2
   (1, 'Area #3'),  -- id 3
-  (1, 'Area #4');  -- id 4
+  (1, 'Area #4'),  -- id 4
+  (2, 'Area #5');  -- id 5
 
 INSERT INTO "allowed_policy" ("area_id", "policy_id", "default_policy")
-  VALUES (1, 1, TRUE), (2, 1, TRUE), (3, 1, TRUE), (4, 1, TRUE);
+  VALUES (1, 1, TRUE), (2, 1, TRUE), (3, 1, TRUE), (4, 1, TRUE), (5, 1, TRUE);
 
 INSERT INTO "membership" ("area_id", "member_id") VALUES
   (1,  9),
@@ -53,7 +56,9 @@ INSERT INTO "membership" ("area_id", "member_id") VALUES
   (4,  6),
   (4,  9),
   (4, 13),
-  (4, 22);
+  (4, 22),
+  (5, 1),
+  (5, 2);
 
 -- global delegations
 INSERT INTO "delegation"
