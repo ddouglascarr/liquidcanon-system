@@ -22,6 +22,7 @@ Environment Variables:
   LQD_DB_SUPERUSER           Database superuser username (default postgres)
   LQD_DB_NAME                Database name (default liquid_feedback)
   LQD_DB_TEMPLATE            Database template (default liquid_feedback_template)
+  API_SRC_LOCATION           Location of the api src dir (default ../liquidcanon)
 
 "
 
@@ -33,6 +34,8 @@ db_user="${LQD_DB_USER:-www-data}"
 db_superuser="${LQD_DB_SUPERUSER:-postgres}"
 db_name="${LQD_DB_NAME:-liquid_feedback}"
 db_template="${LQD_DB_TEMPLATE:-liquid_feedback_template}"
+api_src_location="${API_SRC_LOCATION:-../liquidcanon}"
+ON_ERROR_ROLLBACK="${ON_ERROR_ROLLBACK:-1}"
 
 LQD_CMD="./bin/lqd.sh"
 EXEC_CMD="$LQD_CMD sys exec core_init"
@@ -79,7 +82,7 @@ function exec_sql {
 EOF
 }
 function run_sql_file {
-  $PSQL_CMD -f ./sql/$@.sql
+  $PSQL_CMD -f $api_src_location/src/test/resources/sql/$@.sql
 }
 
 function clean_db {
